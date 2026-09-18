@@ -1,460 +1,470 @@
 <!DOCTYPE html>
-<html lang="ru" class="dark">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Генератор /banoff - Arizona RP</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        az: {
-                            gold: '#f59e0b',
-                            dark: '#0a0d14',
-                            card: '#121824',
-                            border: '#1e293b',
-                            accent: '#6366f1'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-        /* Custom scrollbars */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0d14;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Генератор /banoff — Arizona RP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .settings-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .setting-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.05);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .setting-item label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .setting-item input {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 600;
+      width: 70px;
+      outline: none;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+
+    .btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .output-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 20px;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .output-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-grow: 1;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
+      margin: auto;
+      font-size: 0.95rem;
+    }
+
+    .cmd-item {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: monospace;
+      font-size: 0.95rem;
+      word-break: break-all;
+    }
+
+    .cmd-item .copy-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-left: 10px;
+      white-space: nowrap;
+    }
+
+    .cmd-item .copy-btn:hover {
+      background: var(--accent);
+    }
+
+    /* Модальное окно */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: none;
+      z-index: 2000;
+    }
+  </style>
 </head>
-<body class="bg-az-dark text-slate-100 min-h-screen flex flex-col justify-between">
+<body>
 
-    <div class="max-w-4xl mx-auto w-full p-4 sm:p-6 flex-grow">
-        
-        <!-- Header -->
-        <header class="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-az-border pb-5">
-            <div class="flex items-center gap-3">
-                <div class="p-2.5 bg-az-gold/10 border border-az-gold/30 rounded-xl text-az-gold">
-                    <i data-lucide="shield-alert" class="w-7 h-7"></i>
-                </div>
-                <div>
-                    <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
-                        Arizona RP <span class="text-xs bg-az-gold/20 text-az-gold px-2 py-0.5 rounded-md border border-az-gold/30 font-mono">/banoff Tool</span>
-                    </h1>
-                    <p class="text-slate-400 text-xs sm:text-sm">Генератор офлайн банов для администрации</p>
-                </div>
-            </div>
-
-            <!-- Modal Trigger Button -->
-            <div class="flex items-center gap-2 w-full sm:w-auto">
-                <button onclick="openModal()" 
-                    class="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 active:scale-95">
-                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                    <span>+ Добавить форму</span>
-                </button>
-            </div>
-        </header>
-
-        <!-- Template Settings Accordion -->
-        <div class="bg-az-card border border-az-border rounded-xl p-4 mb-6 shadow-xl">
-            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSettings()">
-                <div class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-300">
-                    <i data-lucide="sliders" class="w-4 h-4 text-az-gold"></i>
-                    <span>Шаблон команды по умолчанию:</span>
-                    <span id="templatePreview" class="hidden sm:inline font-mono text-xs text-slate-400 bg-az-dark px-2 py-0.5 rounded border border-az-border">
-                        /banoff [ник] <span id="previewDays">2000</span> <span id="previewPrefix">ЧСП</span>#[причина] // <span id="previewTag">Quincy</span>
-                    </span>
-                </div>
-                <button class="text-slate-400 hover:text-white transition">
-                    <i data-lucide="chevron-down" id="settingsChevron" class="w-4 h-4 transition-transform duration-200"></i>
-                </button>
-            </div>
-
-            <!-- Settings Form (Collapsible) -->
-            <div id="settingsPanel" class="hidden mt-4 pt-4 border-t border-az-border/60 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Дни бана</label>
-                    <input type="text" id="cfgDays" value="2000" oninput="updateSettings()"
-                        class="w-full bg-az-dark border border-az-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-az-gold font-mono">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Префикс причины</label>
-                    <input type="text" id="cfgPrefix" value="ЧСП" oninput="updateSettings()"
-                        class="w-full bg-az-dark border border-az-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-az-gold font-mono">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Тег админа</label>
-                    <input type="text" id="cfgTag" value="Quincy" oninput="updateSettings()"
-                        class="w-full bg-az-dark border border-az-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-az-gold font-mono">
-                </div>
-            </div>
+  <div class="container">
+    <header>
+      <h1>Генератор /banoff</h1>
+      <div class="settings-bar">
+        <div class="setting-item">
+          <label>Дней:</label>
+          <input type="text" id="cfgDays" value="2000">
         </div>
-
-        <!-- Main List Area -->
-        <div class="bg-az-card border border-az-border rounded-xl p-4 sm:p-5 shadow-2xl flex flex-col min-h-[380px]">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-az-border/60">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="list" class="w-5 h-5 text-az-gold"></i>
-                    <h2 class="font-semibold text-white">Список сгенерированных банов</h2>
-                    <span id="counter" class="bg-az-dark border border-az-border text-xs px-2.5 py-0.5 rounded-full text-slate-400 font-mono">0</span>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                    <button id="copyAllBtn" onclick="copyAll()" disabled
-                        class="flex-1 sm:flex-initial bg-emerald-600/90 hover:bg-emerald-500 disabled:opacity-30 disabled:hover:bg-emerald-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition duration-150 flex items-center justify-center gap-1.5 shadow-md active:scale-95">
-                        <i data-lucide="copy-check" class="w-4 h-4"></i>
-                        <span>Скопировать всё</span>
-                    </button>
-                    <button id="clearBtn" onclick="clearList()" disabled
-                        class="bg-az-dark hover:bg-red-500/20 text-slate-400 hover:text-red-400 border border-az-border disabled:opacity-30 disabled:hover:bg-az-dark disabled:hover:text-slate-400 text-xs font-semibold p-2 rounded-lg transition duration-150 flex items-center justify-center"
-                        title="Очистить список">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Output List Container -->
-            <div id="banList" class="space-y-2.5 flex-grow overflow-y-auto max-h-[420px] pr-1">
-                <!-- Empty State -->
-                <div id="emptyState" class="h-full flex flex-col items-center justify-center text-slate-500 py-16">
-                    <i data-lucide="terminal" class="w-12 h-12 mb-3 stroke-1 text-slate-600"></i>
-                    <p class="text-sm">Список пуст. Нажмите «+ Добавить форму», чтобы внести нарушителя.</p>
-                </div>
-            </div>
+        <div class="setting-item">
+          <label>Префикс:</label>
+          <input type="text" id="cfgPrefix" value="ЧСП">
         </div>
+        <div class="setting-item">
+          <label>Админ:</label>
+          <input type="text" id="cfgAdmin" value="Quincy">
+        </div>
+      </div>
+    </header>
+
+    <div class="actions">
+      <button class="btn" onclick="openModal()">➕ Добавить форму</button>
+      <div>
+        <button class="btn btn-secondary" onclick="copyAll()">📋 Скопировать всё</button>
+        <button class="btn btn-danger" onclick="clearAll()">🗑 Очистить</button>
+      </div>
     </div>
 
-    <!-- Modal Window (Popup) -->
-    <div id="inputModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
-        <div class="bg-az-card border border-az-border rounded-2xl max-w-md w-full p-6 shadow-2xl transform scale-95 transition-transform duration-200" id="modalBox">
-            
-            <div class="flex items-center justify-between border-b border-az-border pb-3 mb-4">
-                <h3 class="font-bold text-lg text-white flex items-center gap-2">
-                    <i data-lucide="user-plus" class="w-5 h-5 text-az-gold"></i>
-                    Добавить бан /banoff
-                </h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-white rounded-lg p-1 transition">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
+    <div class="output-card">
+      <div class="output-header">
+        <span>Сгенерированные команды (<span id="count">0</span>)</span>
+      </div>
+      <div class="output-list" id="list">
+        <div class="empty-state">Список пуст. Нажмите «Добавить форму», чтобы вписать ник и причину.</div>
+      </div>
+    </div>
+  </div>
 
-            <form id="addForm" onsubmit="handleAddSubmit(event)" class="space-y-4">
-                <!-- Nick Input -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Никнейм игрока:</label>
-                    <input type="text" id="nickInput" required placeholder="Ivan_Ivanov" autocomplete="off"
-                        class="w-full bg-az-dark border border-az-border rounded-xl p-3 text-sm text-white focus:ring-2 focus:ring-az-gold focus:border-transparent outline-none transition font-mono placeholder-slate-600">
-                    <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
-                        <i data-lucide="info" class="w-3 h-3 text-az-gold"></i> Пробелы автоматически заменятся на _
-                    </p>
-                </div>
+  <!-- Модальное окно -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Новая форма /banoff</div>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="form-group">
+        <label for="inputNick">Никнейм игрока:</label>
+        <input type="text" id="inputNick" placeholder="Alexander_Gromov" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="inputReason">Причина бана:</label>
+        <input type="text" id="inputReason" placeholder="Рвачка" autocomplete="off">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Закончить</button>
+        <button class="btn" onclick="addCommand()">Добавить (Enter)</button>
+      </div>
+    </div>
+  </div>
 
-                <!-- Reason Input -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Причина бана:</label>
-                    <div class="relative">
-                        <input type="text" id="reasonInput" required placeholder="Продажа вирт / 01" autocomplete="off"
-                            class="w-full bg-az-dark border border-az-border rounded-xl p-3 pl-16 text-sm text-white focus:ring-2 focus:ring-az-gold focus:border-transparent outline-none transition font-mono placeholder-slate-600">
-                        <span id="modalPrefixTag" class="absolute left-3 top-3.5 text-xs font-bold font-mono text-az-gold select-none">
-                            ЧСП#
-                        </span>
-                    </div>
-                </div>
+  <div class="toast" id="toast">Скопировано!</div>
 
-                <!-- Generated Live Preview -->
-                <div class="bg-az-dark/70 border border-az-border/80 rounded-xl p-3 mt-2">
-                    <span class="block text-[10px] text-slate-500 uppercase font-semibold mb-1">Предпросмотр команды:</span>
-                    <p id="livePreview" class="font-mono text-xs text-amber-400 break-all">
-                        /banoff Nick_Name 2000 ЧСП#Причина // Quincy
-                    </p>
-                </div>
+  <script>
+    let commands = [];
 
-                <!-- Modal Actions -->
-                <div class="pt-3 flex gap-2">
-                    <button type="submit" 
-                        class="flex-1 bg-az-gold hover:bg-amber-500 text-slate-950 font-bold py-2.5 px-4 rounded-xl transition duration-150 flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 active:scale-95">
-                        <i data-lucide="check" class="w-4 h-4"></i>
-                        <span>Добавить (Enter)</span>
-                    </button>
-                    <button type="button" onclick="closeModal()" 
-                        class="bg-az-dark hover:bg-slate-800 text-slate-300 border border-az-border font-medium py-2.5 px-4 rounded-xl transition">
-                        Отмена
-                    </button>
-                </div>
-            </form>
+    const modalOverlay = document.getElementById('modalOverlay');
+    const inputNick = document.getElementById('inputNick');
+    const inputReason = document.getElementById('inputReason');
+
+    function openModal() {
+      modalOverlay.classList.add('active');
+      inputNick.value = '';
+      inputReason.value = '';
+      inputNick.focus();
+    }
+
+    function closeModal() {
+      modalOverlay.classList.remove('active');
+    }
+
+    function addCommand() {
+      let nick = inputNick.value.trim().replace(/\s+/g, '_');
+      let reason = inputReason.value.trim();
+
+      if (!nick) {
+        alert('Пожалуйста, введите ник!');
+        inputNick.focus();
+        return;
+      }
+
+      const days = document.getElementById('cfgDays').value.trim() || '2000';
+      const prefix = document.getElementById('cfgPrefix').value.trim();
+      const admin = document.getElementById('cfgAdmin').value.trim() || 'Admin';
+
+      let reasonPart = prefix ? `${prefix}#${reason}` : reason;
+      let fullCmd = `/banoff ${nick} ${days} ${reasonPart} // ${admin}`;
+
+      commands.push(fullCmd);
+      renderList();
+
+      // Очищаем поля и ставим курсор снова на Ник для следующего ввода
+      inputNick.value = '';
+      inputReason.value = '';
+      inputNick.focus();
+
+      showToast('Добавлено!');
+    }
+
+    // Обработка нажатия клавиши Enter внутри полей ввода
+    inputNick.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') inputReason.focus();
+    });
+
+    inputReason.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') addCommand();
+    });
+
+    function renderList() {
+      const listEl = document.getElementById('list');
+      const countEl = document.getElementById('count');
+
+      countEl.innerText = commands.length;
+
+      if (commands.length === 0) {
+        listEl.innerHTML = '<div class="empty-state">Список пуст. Нажмите «Добавить форму», чтобы вписать ник и причину.</div>';
+        return;
+      }
+
+      listEl.innerHTML = commands.map((cmd, index) => `
+        <div class="cmd-item">
+          <span>${escapeHtml(cmd)}</span>
+          <button class="copy-btn" onclick="copySingle(${index})">Скопировать</button>
         </div>
-    </div>
+      `).join('');
+    }
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 transition-all duration-300 opacity-0 translate-y-8 pointer-events-none z-50 font-medium text-sm">
-        <i data-lucide="check-circle" class="w-5 h-5"></i>
-        <span id="toastMsg">Скопировано!</span>
-    </div>
+    function copySingle(index) {
+      navigator.clipboard.writeText(commands[index]);
+      showToast('Команда скопирована!');
+    }
 
-    <!-- Footer -->
-    <footer class="text-center py-4 text-xs text-slate-600 border-t border-az-border/40">
-        Arizona RP Banoff Helper &bull; Разработано для администрации
-    </footer>
+    function copyAll() {
+      if (commands.length === 0) return;
+      navigator.clipboard.writeText(commands.join('\n'));
+      showToast('Весь список скопирован!');
+    }
 
-    <script>
-        lucide.createIcons();
+    function clearAll() {
+      if (commands.length === 0) return;
+      if (confirm('Очистить весь список?')) {
+        commands = [];
+        renderList();
+      }
+    }
 
-        let commands = [];
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      toast.innerText = text;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 1500);
+    }
 
-        // Elements
-        const modal = document.getElementById('inputModal');
-        const modalBox = document.getElementById('modalBox');
-        const nickInput = document.getElementById('nickInput');
-        const reasonInput = document.getElementById('reasonInput');
-        const livePreview = document.getElementById('livePreview');
-
-        // Config Elements
-        const cfgDays = document.getElementById('cfgDays');
-        const cfgPrefix = document.getElementById('cfgPrefix');
-        const cfgTag = document.getElementById('cfgTag');
-
-        // Open Modal
-        function openModal() {
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            modalBox.classList.remove('scale-95');
-            modalBox.classList.add('scale-100');
-            
-            // Clear previous inputs
-            nickInput.value = '';
-            reasonInput.value = '';
-            updateLivePreview();
-            
-            // Auto-focus nick input
-            setTimeout(() => nickInput.focus(), 50);
-        }
-
-        // Close Modal
-        function closeModal() {
-            modal.classList.add('opacity-0', 'pointer-events-none');
-            modalBox.classList.remove('scale-100');
-            modalBox.classList.add('scale-95');
-        }
-
-        // Close modal on ESC key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !modal.classList.contains('pointer-events-none')) {
-                closeModal();
-            }
-        });
-
-        // Toggle Settings Panel
-        function toggleSettings() {
-            const panel = document.getElementById('settingsPanel');
-            const chevron = document.getElementById('settingsChevron');
-            panel.classList.toggle('hidden');
-            chevron.classList.toggle('rotate-180');
-        }
-
-        // Update Settings and UI
-        function updateSettings() {
-            const days = cfgDays.value.trim() || '2000';
-            const prefix = cfgPrefix.value.trim() || 'ЧСП';
-            const tag = cfgTag.value.trim() || 'Quincy';
-
-            document.getElementById('previewDays').innerText = days;
-            document.getElementById('previewPrefix').innerText = prefix;
-            document.getElementById('previewTag').innerText = tag;
-            document.getElementById('modalPrefixTag').innerText = prefix + '#';
-
-            updateLivePreview();
-        }
-
-        // Live preview generation in Modal
-        function updateLivePreview() {
-            const nick = nickInput.value.trim().replace(/\s+/g, '_') || 'Nick_Name';
-            const reason = reasonInput.value.trim() || 'Причина';
-            const days = cfgDays.value.trim() || '2000';
-            const prefix = cfgPrefix.value.trim() ? `${cfgPrefix.value.trim()}#` : '';
-            const tag = cfgTag.value.trim() ? ` // ${cfgTag.value.trim()}` : '';
-
-            livePreview.innerText = `/banoff ${nick} ${days} ${prefix}${reason}${tag}`;
-        }
-
-        nickInput.addEventListener('input', updateLivePreview);
-        reasonInput.addEventListener('input', updateLivePreview);
-
-        // Handle Add Form Submit
-        function handleAddSubmit(e) {
-            e.preventDefault();
-
-            const rawNick = nickInput.value.trim();
-            const reason = reasonInput.value.trim();
-
-            if (!rawNick || !reason) return;
-
-            const cleanNick = rawNick.replace(/\s+/g, '_');
-            const days = cfgDays.value.trim() || '2000';
-            const prefix = cfgPrefix.value.trim() ? `${cfgPrefix.value.trim()}#` : '';
-            const tag = cfgTag.value.trim() ? ` // ${cfgTag.value.trim()}` : '';
-
-            const commandStr = `/banoff ${cleanNick} ${days} ${prefix}${reason}${tag}`;
-
-            commands.push(commandStr);
-            renderList();
-            
-            showToast('Добавлено в список!');
-
-            // Keep modal open and ready for NEXT nick!
-            nickInput.value = '';
-            reasonInput.value = '';
-            updateLivePreview();
-            nickInput.focus();
-        }
-
-        // Render List
-        function renderList() {
-            const banList = document.getElementById('banList');
-            const emptyState = document.getElementById('emptyState');
-            const counter = document.getElementById('counter');
-            const copyAllBtn = document.getElementById('copyAllBtn');
-            const clearBtn = document.getElementById('clearBtn');
-
-            counter.innerText = commands.length;
-
-            if (commands.length === 0) {
-                emptyState.classList.remove('hidden');
-                copyAllBtn.disabled = true;
-                clearBtn.disabled = true;
-                banList.innerHTML = '';
-                banList.appendChild(emptyState);
-                return;
-            }
-
-            emptyState.classList.add('hidden');
-            copyAllBtn.disabled = false;
-            clearBtn.disabled = false;
-
-            banList.innerHTML = '';
-
-            commands.forEach((cmd, index) => {
-                const row = document.createElement('div');
-                row.className = 'group flex items-center justify-between bg-az-dark border border-az-border/80 hover:border-slate-600 rounded-xl p-3 transition duration-150 gap-3';
-
-                row.innerHTML = `
-                    <div class="flex items-center gap-2.5 overflow-hidden">
-                        <span class="text-xs font-mono text-slate-500 w-5 flex-shrink-0">#${index + 1}</span>
-                        <span class="font-mono text-xs sm:text-sm text-slate-200 truncate select-all">${escapeHtml(cmd)}</span>
-                    </div>
-                    <div class="flex items-center gap-1.5 flex-shrink-0">
-                        <button onclick="copySingle('${escapeHtml(cmd)}', this)" 
-                            class="bg-az-card hover:bg-az-accent hover:text-white text-slate-300 border border-az-border px-2.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1"
-                            title="Скопировать строку">
-                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                            <span class="hidden sm:inline">Скопировать</span>
-                        </button>
-                        <button onclick="removeSingle(${index})" 
-                            class="text-slate-500 hover:text-red-400 p-1.5 rounded-lg transition"
-                            title="Удалить">
-                            <i data-lucide="x" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                `;
-
-                banList.appendChild(row);
-            });
-
-            lucide.createIcons();
-        }
-
-        // Copy Single
-        function copySingle(text, btnElement) {
-            copyToClipboard(text);
-            showToast('Команда скопирована!');
-
-            const origHTML = btnElement.innerHTML;
-            btnElement.classList.add('bg-emerald-600', 'text-white', 'border-transparent');
-            btnElement.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i><span class="hidden sm:inline">Скопировано</span>`;
-            lucide.createIcons();
-
-            setTimeout(() => {
-                btnElement.classList.remove('bg-emerald-600', 'text-white', 'border-transparent');
-                btnElement.innerHTML = origHTML;
-                lucide.createIcons();
-            }, 1200);
-        }
-
-        // Copy All
-        function copyAll() {
-            if (commands.length === 0) return;
-            copyToClipboard(commands.join('\n'));
-            showToast(`Скопировано команд: ${commands.length}`);
-        }
-
-        // Remove Single
-        function removeSingle(index) {
-            commands.splice(index, 1);
-            renderList();
-        }
-
-        // Clear List
-        function clearList() {
-            commands = [];
-            renderList();
-            showToast('Список очищен');
-        }
-
-        // Clipboard Helper
-        function copyToClipboard(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
-            try {
-                document.execCommand('copy');
-            } catch (err) {
-                console.error('Ошибка копирования:', err);
-            }
-            document.body.removeChild(textarea);
-        }
-
-        // Toast Helper
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = msg;
-
-            toast.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
-            toast.classList.add('opacity-100', 'translate-y-0');
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', 'translate-y-8', 'pointer-events-none');
-            }, 2000);
-        }
-
-        // Escape HTML
-        function escapeHtml(text) {
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
-    </script>
+    function escapeHtml(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+  </script>
 </body>
 </html>
