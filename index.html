@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор /banoff - Arizona RP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        az: {
+                            gold: '#f59e0b',
+                            dark: '#0a0d14',
+                            card: '#121824',
+                            border: '#1e293b',
+                            accent: '#6366f1'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0d14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="bg-az-dark text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <div class="max-w-4xl mx-auto w-full p-4 sm:p-6 flex-grow">
+        
+        <!-- Header -->
+        <header class="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-az-border pb-5">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-az-gold/10 border border-az-gold/30 rounded-xl text-az-gold">
+                    <i data-lucide="shield-alert" class="w-7 h-7"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+                        Arizona RP <span class="text-xs bg-az-gold/20 text-az-gold px-2 py-0.5 rounded-md border border-az-gold/30 font-mono">/banoff Tool</span>
+                    </h1>
+                    <p class="text-slate-400 text-xs sm:text-sm">Генератор офлайн банов для администрации</p>
+                </div>
+            </div>
+
+            <!-- Modal Trigger Button -->
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button onclick="openModal()" 
+                    class="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 active:scale-95">
+                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    <span>+ Добавить форму</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Template Settings Accordion -->
+        <div class="bg-az-card border border-az-border rounded-xl p-4 mb-6 shadow-xl">
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSettings()">
+                <div class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-300">
+                    <i data-lucide="sliders" class="w-4 h-4 text-az-gold"></i>
+                    <span>Шаблон команды по умолчанию:</span>
+                    <span id="templatePreview" class="hidden sm:inline font-mono text-xs text-slate-400 bg-az-dark px-2 py-0.5 rounded border border-az-border">
+                        /banoff [ник] <span id="previewDays">2000</span> <span id="previewPrefix">ЧСП</span>#[причина] // <span id="previewTag">Quincy</span>
+                    </span>
+                </div>
+                <button class="text-slate-400 hover:text-white transition">
+                    <i data-lucide="chevron-down" id="settingsChevron" class="w-4 h-4 transition-transform duration-200"></i>
+                </button>
+            </div>
+
+            <!-- Settings Form (Collapsible) -->
+            <div id="settingsPanel" class="hidden mt-4 pt-4 border-t border-az-border/60 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Дни бана</label>
+                    <input type="text" id="cfgDays" value="2000" oninput="updateSettings()"
+                        class="w-full bg-az-dark border border-az-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-az-gold font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Префикс причины</label>
+                    <input type="text" id="cfgPrefix" value="ЧСП" oninput="updateSettings()"
+                        class="w-full bg-az-dark border border-az-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-az-gold font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Тег админа</label>
+                    <input type="text" id="cfgTag" value="Quincy" oninput="updateSettings()"
+                        class="w-full bg-az-dark border border-az-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-az-gold font-mono">
+                </div>
+            </div>
+        </div>
+
+        <!-- Main List Area -->
+        <div class="bg-az-card border border-az-border rounded-xl p-4 sm:p-5 shadow-2xl flex flex-col min-h-[380px]">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-az-border/60">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="list" class="w-5 h-5 text-az-gold"></i>
+                    <h2 class="font-semibold text-white">Список сгенерированных банов</h2>
+                    <span id="counter" class="bg-az-dark border border-az-border text-xs px-2.5 py-0.5 rounded-full text-slate-400 font-mono">0</span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                    <button id="copyAllBtn" onclick="copyAll()" disabled
+                        class="flex-1 sm:flex-initial bg-emerald-600/90 hover:bg-emerald-500 disabled:opacity-30 disabled:hover:bg-emerald-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition duration-150 flex items-center justify-center gap-1.5 shadow-md active:scale-95">
+                        <i data-lucide="copy-check" class="w-4 h-4"></i>
+                        <span>Скопировать всё</span>
+                    </button>
+                    <button id="clearBtn" onclick="clearList()" disabled
+                        class="bg-az-dark hover:bg-red-500/20 text-slate-400 hover:text-red-400 border border-az-border disabled:opacity-30 disabled:hover:bg-az-dark disabled:hover:text-slate-400 text-xs font-semibold p-2 rounded-lg transition duration-150 flex items-center justify-center"
+                        title="Очистить список">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output List Container -->
+            <div id="banList" class="space-y-2.5 flex-grow overflow-y-auto max-h-[420px] pr-1">
+                <!-- Empty State -->
+                <div id="emptyState" class="h-full flex flex-col items-center justify-center text-slate-500 py-16">
+                    <i data-lucide="terminal" class="w-12 h-12 mb-3 stroke-1 text-slate-600"></i>
+                    <p class="text-sm">Список пуст. Нажмите «+ Добавить форму», чтобы внести нарушителя.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Window (Popup) -->
+    <div id="inputModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+        <div class="bg-az-card border border-az-border rounded-2xl max-w-md w-full p-6 shadow-2xl transform scale-95 transition-transform duration-200" id="modalBox">
+            
+            <div class="flex items-center justify-between border-b border-az-border pb-3 mb-4">
+                <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-5 h-5 text-az-gold"></i>
+                    Добавить бан /banoff
+                </h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white rounded-lg p-1 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="addForm" onsubmit="handleAddSubmit(event)" class="space-y-4">
+                <!-- Nick Input -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Никнейм игрока:</label>
+                    <input type="text" id="nickInput" required placeholder="Ivan_Ivanov" autocomplete="off"
+                        class="w-full bg-az-dark border border-az-border rounded-xl p-3 text-sm text-white focus:ring-2 focus:ring-az-gold focus:border-transparent outline-none transition font-mono placeholder-slate-600">
+                    <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+                        <i data-lucide="info" class="w-3 h-3 text-az-gold"></i> Пробелы автоматически заменятся на _
+                    </p>
+                </div>
+
+                <!-- Reason Input -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Причина бана:</label>
+                    <div class="relative">
+                        <input type="text" id="reasonInput" required placeholder="Продажа вирт / 01" autocomplete="off"
+                            class="w-full bg-az-dark border border-az-border rounded-xl p-3 pl-16 text-sm text-white focus:ring-2 focus:ring-az-gold focus:border-transparent outline-none transition font-mono placeholder-slate-600">
+                        <span id="modalPrefixTag" class="absolute left-3 top-3.5 text-xs font-bold font-mono text-az-gold select-none">
+                            ЧСП#
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Generated Live Preview -->
+                <div class="bg-az-dark/70 border border-az-border/80 rounded-xl p-3 mt-2">
+                    <span class="block text-[10px] text-slate-500 uppercase font-semibold mb-1">Предпросмотр команды:</span>
+                    <p id="livePreview" class="font-mono text-xs text-amber-400 break-all">
+                        /banoff Nick_Name 2000 ЧСП#Причина // Quincy
+                    </p>
+                </div>
+
+                <!-- Modal Actions -->
+                <div class="pt-3 flex gap-2">
+                    <button type="submit" 
+                        class="flex-1 bg-az-gold hover:bg-amber-500 text-slate-950 font-bold py-2.5 px-4 rounded-xl transition duration-150 flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 active:scale-95">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                        <span>Добавить (Enter)</span>
+                    </button>
+                    <button type="button" onclick="closeModal()" 
+                        class="bg-az-dark hover:bg-slate-800 text-slate-300 border border-az-border font-medium py-2.5 px-4 rounded-xl transition">
+                        Отмена
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 transition-all duration-300 opacity-0 translate-y-8 pointer-events-none z-50 font-medium text-sm">
+        <i data-lucide="check-circle" class="w-5 h-5"></i>
+        <span id="toastMsg">Скопировано!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-600 border-t border-az-border/40">
+        Arizona RP Banoff Helper &bull; Разработано для администрации
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        let commands = [];
+
+        // Elements
+        const modal = document.getElementById('inputModal');
+        const modalBox = document.getElementById('modalBox');
+        const nickInput = document.getElementById('nickInput');
+        const reasonInput = document.getElementById('reasonInput');
+        const livePreview = document.getElementById('livePreview');
+
+        // Config Elements
+        const cfgDays = document.getElementById('cfgDays');
+        const cfgPrefix = document.getElementById('cfgPrefix');
+        const cfgTag = document.getElementById('cfgTag');
+
+        // Open Modal
+        function openModal() {
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalBox.classList.remove('scale-95');
+            modalBox.classList.add('scale-100');
+            
+            // Clear previous inputs
+            nickInput.value = '';
+            reasonInput.value = '';
+            updateLivePreview();
+            
+            // Auto-focus nick input
+            setTimeout(() => nickInput.focus(), 50);
+        }
+
+        // Close Modal
+        function closeModal() {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modalBox.classList.remove('scale-100');
+            modalBox.classList.add('scale-95');
+        }
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('pointer-events-none')) {
+                closeModal();
+            }
+        });
+
+        // Toggle Settings Panel
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            const chevron = document.getElementById('settingsChevron');
+            panel.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        // Update Settings and UI
+        function updateSettings() {
+            const days = cfgDays.value.trim() || '2000';
+            const prefix = cfgPrefix.value.trim() || 'ЧСП';
+            const tag = cfgTag.value.trim() || 'Quincy';
+
+            document.getElementById('previewDays').innerText = days;
+            document.getElementById('previewPrefix').innerText = prefix;
+            document.getElementById('previewTag').innerText = tag;
+            document.getElementById('modalPrefixTag').innerText = prefix + '#';
+
+            updateLivePreview();
+        }
+
+        // Live preview generation in Modal
+        function updateLivePreview() {
+            const nick = nickInput.value.trim().replace(/\s+/g, '_') || 'Nick_Name';
+            const reason = reasonInput.value.trim() || 'Причина';
+            const days = cfgDays.value.trim() || '2000';
+            const prefix = cfgPrefix.value.trim() ? `${cfgPrefix.value.trim()}#` : '';
+            const tag = cfgTag.value.trim() ? ` // ${cfgTag.value.trim()}` : '';
+
+            livePreview.innerText = `/banoff ${nick} ${days} ${prefix}${reason}${tag}`;
+        }
+
+        nickInput.addEventListener('input', updateLivePreview);
+        reasonInput.addEventListener('input', updateLivePreview);
+
+        // Handle Add Form Submit
+        function handleAddSubmit(e) {
+            e.preventDefault();
+
+            const rawNick = nickInput.value.trim();
+            const reason = reasonInput.value.trim();
+
+            if (!rawNick || !reason) return;
+
+            const cleanNick = rawNick.replace(/\s+/g, '_');
+            const days = cfgDays.value.trim() || '2000';
+            const prefix = cfgPrefix.value.trim() ? `${cfgPrefix.value.trim()}#` : '';
+            const tag = cfgTag.value.trim() ? ` // ${cfgTag.value.trim()}` : '';
+
+            const commandStr = `/banoff ${cleanNick} ${days} ${prefix}${reason}${tag}`;
+
+            commands.push(commandStr);
+            renderList();
+            
+            showToast('Добавлено в список!');
+
+            // Keep modal open and ready for NEXT nick!
+            nickInput.value = '';
+            reasonInput.value = '';
+            updateLivePreview();
+            nickInput.focus();
+        }
+
+        // Render List
+        function renderList() {
+            const banList = document.getElementById('banList');
+            const emptyState = document.getElementById('emptyState');
+            const counter = document.getElementById('counter');
+            const copyAllBtn = document.getElementById('copyAllBtn');
+            const clearBtn = document.getElementById('clearBtn');
+
+            counter.innerText = commands.length;
+
+            if (commands.length === 0) {
+                emptyState.classList.remove('hidden');
+                copyAllBtn.disabled = true;
+                clearBtn.disabled = true;
+                banList.innerHTML = '';
+                banList.appendChild(emptyState);
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            copyAllBtn.disabled = false;
+            clearBtn.disabled = false;
+
+            banList.innerHTML = '';
+
+            commands.forEach((cmd, index) => {
+                const row = document.createElement('div');
+                row.className = 'group flex items-center justify-between bg-az-dark border border-az-border/80 hover:border-slate-600 rounded-xl p-3 transition duration-150 gap-3';
+
+                row.innerHTML = `
+                    <div class="flex items-center gap-2.5 overflow-hidden">
+                        <span class="text-xs font-mono text-slate-500 w-5 flex-shrink-0">#${index + 1}</span>
+                        <span class="font-mono text-xs sm:text-sm text-slate-200 truncate select-all">${escapeHtml(cmd)}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button onclick="copySingle('${escapeHtml(cmd)}', this)" 
+                            class="bg-az-card hover:bg-az-accent hover:text-white text-slate-300 border border-az-border px-2.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1"
+                            title="Скопировать строку">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span class="hidden sm:inline">Скопировать</span>
+                        </button>
+                        <button onclick="removeSingle(${index})" 
+                            class="text-slate-500 hover:text-red-400 p-1.5 rounded-lg transition"
+                            title="Удалить">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+
+                banList.appendChild(row);
+            });
+
+            lucide.createIcons();
+        }
+
+        // Copy Single
+        function copySingle(text, btnElement) {
+            copyToClipboard(text);
+            showToast('Команда скопирована!');
+
+            const origHTML = btnElement.innerHTML;
+            btnElement.classList.add('bg-emerald-600', 'text-white', 'border-transparent');
+            btnElement.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i><span class="hidden sm:inline">Скопировано</span>`;
+            lucide.createIcons();
+
+            setTimeout(() => {
+                btnElement.classList.remove('bg-emerald-600', 'text-white', 'border-transparent');
+                btnElement.innerHTML = origHTML;
+                lucide.createIcons();
+            }, 1200);
+        }
+
+        // Copy All
+        function copyAll() {
+            if (commands.length === 0) return;
+            copyToClipboard(commands.join('\n'));
+            showToast(`Скопировано команд: ${commands.length}`);
+        }
+
+        // Remove Single
+        function removeSingle(index) {
+            commands.splice(index, 1);
+            renderList();
+        }
+
+        // Clear List
+        function clearList() {
+            commands = [];
+            renderList();
+            showToast('Список очищен');
+        }
+
+        // Clipboard Helper
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('Ошибка копирования:', err);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+
+            toast.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-8', 'pointer-events-none');
+            }, 2000);
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
